@@ -1,0 +1,120 @@
+﻿@using HTMLPreviewer.Data.Models
+@model InputViewModel
+@{
+	ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+ <h1 class="display-4">Welcome to HTML code previewer</h1>
+ <br />
+ <br />
+</div>
+
+<div class="container">
+
+ <!--<label for="basic-url">URL path:</label>-->
+ <div class="input-group mb-3">
+		@if (@Model.Id != 0)
+		{
+	  <span class="input-group-text container-fluid" id="spanField"> <i class="btn far fa-copy fa-3x" id="buttonSpan"></i> https://localhost:44390/Home?@Model.Id</span>
+		}
+		else
+		{
+	  <span class="input-group-text container-fluid">https://</span>
+		}
+ </div>
+
+ <div class="row">
+  <div class="col">
+   <div class="jumbotron">
+	<h1 class="display-4">HTML box</h1>
+	<hr class="my-4">
+	<form method="post" enctype="multipart/form-data">
+	 <fieldset>
+	  <div class="form-group">
+	   <label asp-for="HTML"></label>
+	   <textarea asp-for="HTML" class="form-control" rows="10" id="textHTML" placeholder="Write your html here..."></textarea>
+	   <span asp-validation-for="HTML" class="invalid-feedback"></span>
+	  </div>
+	  <br>
+	  <button type="submit" class=" btn-primary btn-lg m-2">Save</button>
+	  <button type="button" class=" btn-primary btn-lg m-2" id="buttonRun">Run</button>
+	  <button type="button" class=" btn-success btn-lg m-2" id="buttonCheck">Check original</button>
+	 </fieldset>
+	</form>
+   </div>
+  </div>
+
+  <div class="col">
+   <div class="jumbotron">
+	<h1 class="display-4">Rendered HTML</h1>
+	<hr class="my-4">
+	<div class="form-group">
+	 <p class="bootstrap-off" id="text"></p>
+	 <span class="invalid-feedback"></span>
+	</div>
+	<!--<p>Text</p>-->
+   </div>
+  </div>
+
+ </div>
+</div>
+
+@section Scripts
+{
+<script>
+		 let button = document.getElementById('buttonRun');
+
+	button.addEventListener('click', (e) => {
+		var textHTML = document.getElementById('textHTML').value;
+
+		const byteSize = str => new Blob([str]).size;
+		var sizeInMB = byteSize(textHTML) / (1024 * 1024)
+
+		var result;
+		if (sizeInMB < 5) {
+			result = textHTML;
+		} else {
+			result = "Too large file, size of 5MB can not be exceeded!";
+		}
+
+		document.getElementById('text').innerHTML = result;
+	})
+</script>
+
+<script>
+	$("#buttonCheck").click(function () {
+			var text=$('#textHTML').val();
+			var data={HTMLText: text}
+
+			$.ajax({
+				type: "POST",
+				url: "/api/CheckOriginal",
+				data: JSON.stringify(data),
+				headers: {
+				},
+				success: function (data) {
+					if(data)
+					{
+						alert("HTML bellow is original. :)");
+					}
+					else
+					{
+						alert("HTML bellow is NOT original! :(");
+					}
+				},
+				contentType: 'application/json',
+			});
+		});
+</script>
+
+<script>
+		let buttonSpan=document.getElementById('buttonSpan');
+	buttonSpan.addEventListener('click', (e)=>{
+		  var copyText=document.getElementById('spanField');
+		   navigator.clipboard.writeText(copyText.innerText);
+		   alert("Copied to clipboard.");
+	  });
+
+</script>
+}
