@@ -23,3 +23,4 @@ Connect to Database using powershell or Solution explorer.
 --------
 
 This website is very intuitive to use! Try it!
+![image 1](https://user-images.githubusercontent.com/44399948/137617236-0187db5a-891f-4f14-b676-2d33bba0e897.png)
